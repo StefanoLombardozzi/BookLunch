@@ -25,7 +25,7 @@ public enum PrenotazioneEnum {
         return message;
     }
 
-    public static PrenotazioneEnum getRichiestaEnumByMessageCode(final String messageCode) {
+    public static PrenotazioneEnum getPrenotazioneEnumByMessageCode(final String messageCode) {
         for (final PrenotazioneEnum prenotazioneEnum : PrenotazioneEnum.values()) {
             if (prenotazioneEnum.getMessageCode().equals(messageCode)) {
                 return prenotazioneEnum;

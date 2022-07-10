@@ -1,6 +1,7 @@
 package com.booklaunch.booklaunch.dto;
 
 import com.booklaunch.booklaunch.model.Richiesta;
+import com.booklaunch.booklaunch.model.Utente;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -19,20 +20,18 @@ public class RichiestaDTO {
 
     private Boolean post_cena;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate data_pranzo;
-
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate data_cena;
-
     private Boolean stato_richiesta;
 
-    public RichiestaDTO(Richiesta richiesta){
+    private Long id_prenotazione;
+
+    private Long id_utente;
+
+    public RichiestaDTO(Richiesta richiesta) {
         this.id = richiesta.getId();
         this.post_pranzo = richiesta.getPost_pranzo();
         this.post_cena = richiesta.getPost_cena();
-        this.data_pranzo = richiesta.getData_pranzo();
-        this.data_cena = richiesta.getData_cena();
         this.stato_richiesta = richiesta.getStato_richiesta();
+        this.id_prenotazione = richiesta.getPrenotazione().getId();
+        this.id_utente = richiesta.getUtente().getId();
     }
 }

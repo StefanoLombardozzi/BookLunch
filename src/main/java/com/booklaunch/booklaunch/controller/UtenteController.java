@@ -24,7 +24,6 @@ import java.util.List;
 public class UtenteController {
 
     private final UtenteService utenteService;
-    private final UtenteServiceImpl utenteServiceImpl;
 
     /**
      * Ritorna tutti gli utenti

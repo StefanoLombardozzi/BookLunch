@@ -1,5 +1,6 @@
 package com.booklaunch.booklaunch.model;
 
+import com.booklaunch.booklaunch.dto.RichiestaDTO;
 import com.booklaunch.booklaunch.exception.enums.RoleEnum;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -26,15 +27,6 @@ public class Richiesta {
 
     private Boolean stato_richiesta;
 
-    @NonNull
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate data_pranzo;
-
-    @NonNull
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate data_cena;
-
-
     @ManyToOne
     @JoinColumn(name = "id_prenotazione")
     private Prenotazione prenotazione;
@@ -44,9 +36,10 @@ public class Richiesta {
     private Utente utente;
 
 
-    /*public CentroVaccinale(CentroVaccinaleDTO centroDTO) {
-        this.id = centroDTO.id;
-        this.nome = centroDTO.nome;
-        this.indirizzo = centroDTO.indirizzo;
-    }*/
+    public Richiesta(RichiestaDTO richiestaDTO) {
+        this.id = richiestaDTO.getId();
+        this.post_pranzo = richiestaDTO.getPost_pranzo();
+        this.post_cena = richiestaDTO.getPost_cena();
+        this.stato_richiesta = richiestaDTO.getStato_richiesta();
+    }
 }
