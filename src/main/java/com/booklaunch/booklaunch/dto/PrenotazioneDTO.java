@@ -30,6 +30,8 @@ public class PrenotazioneDTO {
 
     private Boolean check_richiesta;
 
+    private Long id_utente;
+
     public PrenotazioneDTO(Prenotazione prenotazione){
         this.id = prenotazione.getId();
         this.colazione = prenotazione.getColazione();
@@ -39,5 +41,6 @@ public class PrenotazioneDTO {
         this.sacchetto_pranzo = prenotazione.getSacchetto_pranzo();
         this.sacchetto_cena = prenotazione.getSacchetto_cena();
         this.check_richiesta = prenotazione.getCheck_richiesta();
+        this.id_utente = prenotazione.getUtente().getId();
     }
 }

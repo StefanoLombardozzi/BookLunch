@@ -38,4 +38,6 @@ public interface PrenotazioneRepository extends JpaRepository<Prenotazione, Long
     @Query("select p from Prenotazione p join Utente u on p.utente.id = u.id AND u.id =: id")
     List<Prenotazione> prenotazioneByUtente(@Param("id") Long id_utente);
 
+    @Query("select count(p) from Prenotazione p join Utente u on p.utente.id = u.id AND u.id =: id WHERE p.data_prenotazione =: data_prenotazione")
+    int existsByUtenteAndData(@Param("id_utente") Long id_utente,@Param("data_prenotazione") LocalDate data_prenotazione);
 }
