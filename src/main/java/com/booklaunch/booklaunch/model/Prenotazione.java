@@ -29,7 +29,6 @@ public class Prenotazione {
     private Boolean check_richiesta;
 
     @NonNull
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate data_prenotazione;
 
     private Boolean sacchetto_pranzo;

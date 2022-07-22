@@ -47,27 +47,28 @@ public class PrenotazioneServiceImpl implements PrenotazioneService {
     @Override
     public PrenotazioneDTO insertPrenotazione(PrenotazioneDTO prenotazioneDTO) {
         LocalDate today = LocalDate.now();
-        if (prenotazioneRepository.existsByUtenteAndData(prenotazioneDTO.getId_utente(), prenotazioneDTO.getData_prenotazione()) != 0) {
+        if (prenotazioneRepository.existsByUtenteAndData(prenotazioneDTO.getId_utente(), prenotazioneDTO.getData_prenotazione()) == 0) {
             Prenotazione prenotazione = new Prenotazione(prenotazioneDTO);
+            prenotazione.setSacchetto_pranzo(false);  //false di default per far funzionare gli if al di sotto di qui
+            prenotazione.setSacchetto_cena(false);
+            prenotazione.setUtente(utenteRepository.findById(prenotazioneDTO.getId_utente()).get());
             if ((ChronoUnit.DAYS.between(today, prenotazioneDTO.getData_prenotazione()) >= 1)) {
                 prenotazione.setColazione(prenotazioneDTO.getColazione());
                 prenotazione.setPranzo(prenotazioneDTO.getPranzo());
                 prenotazione.setCena(prenotazioneDTO.getCena());
                 prenotazione.setData_prenotazione(prenotazioneDTO.getData_prenotazione());
+                prenotazione.setCheck_richiesta(Boolean.FALSE);
 
-                if (prenotazioneDTO.getCena() == null) {
+                if (!prenotazioneDTO.getCena()) {
+                    prenotazione.setSacchetto_cena(prenotazioneDTO.getSacchetto_cena());  //cose di front-end
+                }
+                if (!prenotazioneDTO.getPranzo()) {
                     prenotazione.setSacchetto_pranzo(prenotazioneDTO.getSacchetto_pranzo());
-                } else {
+                }
+                /*} else {
                     prenotazioneEnum = PrenotazioneEnum.getPrenotazioneEnumByMessageCode("PRE_SE");
                     throw new ApiRequestException(prenotazioneEnum.getMessage());
-                }
-
-                if (prenotazioneDTO.getPranzo() == null) {
-                    prenotazione.setSacchetto_cena(prenotazioneDTO.getSacchetto_cena());
-                } else {
-                    prenotazioneEnum = PrenotazioneEnum.getPrenotazioneEnumByMessageCode("PRE_SE");
-                    throw new ApiRequestException(prenotazioneEnum.getMessage());
-                }
+                }*/
 
                 prenotazioneRepository.save(prenotazione);
 
@@ -165,6 +166,8 @@ public class PrenotazioneServiceImpl implements PrenotazioneService {
         LocalDate today = LocalDate.now();
         if (prenotazioneRepository.existsById(prenotazioneDTO.getId())) {
             Prenotazione prenotazione = prenotazioneRepository.findById(prenotazioneDTO.getId()).get();
+            prenotazione.setSacchetto_pranzo(false);  //false di default per far funzionare gli if al di sotto di qui
+            prenotazione.setSacchetto_cena(false);
 
             if (!prenotazione.getCheck_richiesta()) {
                 if ((ChronoUnit.DAYS.between(today, prenotazione.getData_prenotazione()) >= 1)) {
@@ -172,19 +175,11 @@ public class PrenotazioneServiceImpl implements PrenotazioneService {
                     prenotazione.setPranzo(prenotazioneDTO.getPranzo());
                     prenotazione.setCena(prenotazioneDTO.getCena());
 
-                    if (prenotazioneDTO.getCena() == null) {
-                        prenotazione.setSacchetto_pranzo(prenotazioneDTO.getSacchetto_pranzo());
-                    } else {
-                        prenotazioneEnum = PrenotazioneEnum.getPrenotazioneEnumByMessageCode("PRE_SE");
-                        throw new ApiRequestException(prenotazioneEnum.getMessage());
-                    }
-
-                    if (prenotazioneDTO.getPranzo() == null) {
+                    if (!prenotazioneDTO.getCena())
                         prenotazione.setSacchetto_cena(prenotazioneDTO.getSacchetto_cena());
-                    } else {
-                        prenotazioneEnum = PrenotazioneEnum.getPrenotazioneEnumByMessageCode("PRE_SE");
-                        throw new ApiRequestException(prenotazioneEnum.getMessage());
-                    }
+
+                    if (!prenotazioneDTO.getPranzo())
+                        prenotazione.setSacchetto_pranzo(prenotazioneDTO.getSacchetto_pranzo());
 
                     prenotazioneRepository.save(prenotazione);
 
@@ -194,11 +189,12 @@ public class PrenotazioneServiceImpl implements PrenotazioneService {
                     throw new ApiRequestException(prenotazioneEnum.getMessage());
                 }
 
+
             } else {
                 prenotazioneEnum = PrenotazioneEnum.getPrenotazioneEnumByMessageCode("PRE_DM");
                 throw new ApiRequestException(prenotazioneEnum.getMessage());
             }
-        }else {
+        } else {
             prenotazioneEnum = PrenotazioneEnum.getPrenotazioneEnumByMessageCode("PRE_IDNE");
             throw new ApiRequestException(prenotazioneEnum.getMessage());
         }
