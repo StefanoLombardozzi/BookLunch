@@ -47,7 +47,7 @@ public class PrenotazioneController {
         return prenotazioneService.findByData(data_prenotazione);
     }
 
-    @GetMapping("countByPranzoAndData")
+    @GetMapping("/countByPranzoAndData")
     public void countByPranzoAndData(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate data_prenotazione){
         prenotazioneService.countByPranzoAndData(data_prenotazione);
     }

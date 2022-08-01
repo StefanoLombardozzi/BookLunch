@@ -8,7 +8,8 @@ public enum RichiestaEnum {
     RICHIESTA_DELETE_ERROR("RIC_DLE", "Errore durante l'eliminazione della richiesta"),
     RICHIESTA_ID_NOT_EXIST("RIC_IDNE", "La richiesta che stai cercando non esiste"),
     RICHIESTA_EMPTY_FIELD("RIC_EF", "Alcuni campi sono vuoti"),
-    RICHIESTA_USER_UNEXIST("RIC_UN","L'utente che stai cercando non esiste");
+    RICHIESTA_USER_UNEXIST("RIC_UN","L'utente che stai cercando non esiste"),
+    RICHIESTA_ALREADY_TAKE("RIC_AT","La richiesta indicata è stata già gestita");
 
     private final String messageCode;
     private final String message;

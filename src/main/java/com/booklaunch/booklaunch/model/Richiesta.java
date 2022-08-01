@@ -18,7 +18,7 @@ import java.util.List;
 public class Richiesta {
 
     @Id  //specifica l'id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) //ogni tabella inizierà da 1
+    @GeneratedValue(strategy = GenerationType.AUTO) //ogni tabella inizierà da 1
     private Long id;
 
     private Boolean post_pranzo;

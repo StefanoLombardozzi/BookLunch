@@ -41,10 +41,15 @@ public class RichiestaServiceImpl implements RichiestaService {
         if (prenotazioneRepository.existsById(richiestaDTO.getId_prenotazione())) {
             Prenotazione prenotazione = prenotazioneRepository.findById(richiestaDTO.getId_prenotazione()).get();
             Richiesta richiesta = new Richiesta(richiestaDTO);
+            richiesta.setUtente(utenteRepository.findById(richiestaDTO.getId_utente()).get());
+            richiesta.setPrenotazione(prenotazione);
+            /*richiesta.setPost_pranzo(false);  //false di default per far funzionare gli if al di sotto di qui
+            richiesta.setPost_cena(false);*/
 
             if ((richiestaRepository.findByPrenotazione_IdAndStato_richiesta(prenotazione.getId())) == 0) {
                 prenotazione.setCheck_richiesta(Boolean.TRUE);
                 prenotazioneRepository.save(prenotazione);
+                richiestaRepository.save(richiesta);
                 return new RichiestaDTO(richiesta);
             } else {
                 richiestaEnum = RichiestaEnum.getRichiestaEnumByMessageCode("RIC_AE");
@@ -111,12 +116,17 @@ public class RichiestaServiceImpl implements RichiestaService {
     public Boolean accetta_richiesta(Long id_richiesta) {
         if (richiestaRepository.existsById(id_richiesta)) {
             Richiesta richiesta = richiestaRepository.findById(id_richiesta).get();
-            richiesta.setStato_richiesta(Boolean.TRUE);
-            Prenotazione prenotazione = prenotazioneRepository.findById(richiesta.getPrenotazione().getId()).get();
-            prenotazione.setCheck_richiesta(Boolean.FALSE);
-            richiestaRepository.save(richiesta);
-            prenotazioneRepository.save(prenotazione);
-            return true;
+            if(richiesta.getStato_richiesta() == null) {
+                richiesta.setStato_richiesta(Boolean.TRUE);
+                Prenotazione prenotazione = prenotazioneRepository.findById(richiesta.getPrenotazione().getId()).get();
+                prenotazione.setCheck_richiesta(Boolean.FALSE);
+                richiestaRepository.save(richiesta);
+                prenotazioneRepository.save(prenotazione);
+                return true;
+            }else{
+                richiestaEnum = RichiestaEnum.getRichiestaEnumByMessageCode("RIC_AT");
+                throw new ApiRequestException(richiestaEnum.getMessage());
+            }
         }else{
             richiestaEnum = RichiestaEnum.getRichiestaEnumByMessageCode("RIC_NF");
             throw new ApiRequestException(richiestaEnum.getMessage());
@@ -127,12 +137,17 @@ public class RichiestaServiceImpl implements RichiestaService {
     public Boolean rifiuta_richiesta(Long id_richiesta) {
         if (richiestaRepository.existsById(id_richiesta)) {
             Richiesta richiesta = richiestaRepository.findById(id_richiesta).get();
-            richiesta.setStato_richiesta(Boolean.FALSE);
-            Prenotazione prenotazione = prenotazioneRepository.findById(richiesta.getPrenotazione().getId()).get();
-            prenotazione.setCheck_richiesta(Boolean.FALSE);
-            richiestaRepository.save(richiesta);
-            prenotazioneRepository.save(prenotazione);
-            return true;
+            if(richiesta.getStato_richiesta() == null) {
+                richiesta.setStato_richiesta(Boolean.FALSE);
+                Prenotazione prenotazione = prenotazioneRepository.findById(richiesta.getPrenotazione().getId()).get();
+                prenotazione.setCheck_richiesta(Boolean.FALSE);
+                richiestaRepository.save(richiesta);
+                prenotazioneRepository.save(prenotazione);
+                return true;
+            }else{
+                richiestaEnum = RichiestaEnum.getRichiestaEnumByMessageCode("RIC_AT");
+                throw new ApiRequestException(richiestaEnum.getMessage());
+            }
         }else{
             richiestaEnum = RichiestaEnum.getRichiestaEnumByMessageCode("RIC_NF");
             throw new ApiRequestException(richiestaEnum.getMessage());

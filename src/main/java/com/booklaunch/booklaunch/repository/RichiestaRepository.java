@@ -19,12 +19,12 @@ public interface RichiestaRepository extends JpaRepository<Richiesta, Long> {
     @Query("select count(r) from Richiesta r JOIN Prenotazione p On r.prenotazione.id=:id WHERE r.stato_richiesta is NULL")
     int findByPrenotazione_IdAndStato_richiesta(@Param("id") Long id);
 
-    @Query("select distinct(r) from Richiesta r  WHERE r.prenotazione.utente.id=:cod AND r.stato_richiesta is NULL ")
+    @Query("select distinct(r) from Richiesta r WHERE r.prenotazione.utente.id=:cod AND r.stato_richiesta is NULL ")
     List<Richiesta> getRichiesteUtente(@Param("cod") Long cod);
 
-    @Query("select distinct(r) from Richiesta r  WHERE r.stato_richiesta is NULL ")
+    @Query("select distinct(r) from Richiesta r WHERE r.stato_richiesta is NULL ")
     List<Richiesta> getRichiesteAdmin();
 
-    @Query("select distinct(r) from Richiesta r  WHERE r.prenotazione.utente.id=:cod")
+    @Query("select distinct(r) from Richiesta r WHERE r.prenotazione.utente.id=:cod")
     List<Richiesta> getRichiesteByUtente(@Param("cod") Long cod);
 }

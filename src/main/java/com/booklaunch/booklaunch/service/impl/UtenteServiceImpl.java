@@ -55,7 +55,7 @@ public class UtenteServiceImpl implements UtenteService, UserDetailsService {
 
     @Override
     public UtenteDTO create_utente(UtenteDTO utenteDTO) {
-        if(utenteRepository.existsByCognomeAndNomeAndEmail(utenteDTO.cognome,utenteDTO.nome,utenteDTO.getEmail())){
+        if(utenteRepository.existsByEmail(utenteDTO.getEmail())){
             utenteEnum = UtenteEnum.getUtenteEnumByMessageCode("UTE_AE");
             throw new ApiRequestException(utenteEnum.getMessage());
         }else{
