@@ -72,6 +72,10 @@ public class RichiestaServiceImpl implements RichiestaService {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public List<RichiestaDTO> findAll() {
         if (!richiestaRepository.findAll().isEmpty())

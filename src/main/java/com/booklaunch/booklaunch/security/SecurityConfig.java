@@ -53,13 +53,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         customAuthenticationFilter.setFilterProcessesUrl("/login");
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.authorizeRequests().antMatchers( "/login**","/token/refresh/**").permitAll();
+        http.authorizeRequests().antMatchers( "/login**","/token/refresh/**","/api/**").permitAll();
         http.
                 authorizeRequests()
                 .antMatchers("/", "/public/**", "/resources/static/**")
                 .permitAll();
 
-
+        /*
         //UTENTE
         http.authorizeRequests().antMatchers(GET, "/api/utente/findAll").hasAnyAuthority("ROLE_ADMIN");
         http.authorizeRequests().antMatchers(POST, "/api/utente/createUtente").permitAll();
@@ -81,6 +81,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers(GET, "/api/prenotazione/countByPranzoAndData").hasAnyAuthority("ROLE_ADMIN");
         http.authorizeRequests().antMatchers(GET, "/api/prenotazione/countByCenaAndData").hasAnyAuthority("ROLE_ADMIN");
         http.authorizeRequests().antMatchers(GET, "/api/prenotazione/countByColazioneAndData").hasAnyAuthority("ROLE_ADMIN");
+        http.authorizeRequests().antMatchers(GET, "/api/prenotazione/countBySacchettoPranzoAndData").hasAnyAuthority("ROLE_ADMIN");
         http.authorizeRequests().antMatchers(GET, "/api/prenotazione/countBySacchettoCenaAndData").hasAnyAuthority("ROLE_ADMIN");
         http.authorizeRequests().antMatchers(PUT, "/api/prenotazione/updatePrenotazione").hasAnyAuthority("ROLE_ADMIN");
         http.authorizeRequests().antMatchers(PUT, "/api/prenotazione/updatePrenotazione").hasAnyAuthority("ROLE_USER");
@@ -94,12 +95,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers(POST, "/api/richiesta/createRichiesta").hasAnyAuthority("ROLE_ADMIN");
         http.authorizeRequests().antMatchers(DELETE, "/api/richiesta/deleteRichiesta").hasAnyAuthority("ROLE_USER");
         http.authorizeRequests().antMatchers(DELETE, "/api/richiesta/deleteRichiesta").hasAnyAuthority("ROLE_ADMIN");
-        http.authorizeRequests().antMatchers(GET, "/api/richiesta/getRichiesteUtente").hasAnyAuthority("ROLE_USER");  //RICHIESTE NON ANCORA GESTITE (L'UTENTE VEDE LE SUE RICHIESTE NON ANCORA GESTITE)
-        http.authorizeRequests().antMatchers(GET, "/api/richiesta/getRichiesteAdmin").hasAnyAuthority("ROLE_ADMIN");  //RICHIESTE NON GESTITE DAGLI ADMIN DI TUTTI GLI UTENTI
-        http.authorizeRequests().antMatchers(GET, "/api/richiesta/getRichiesteByUtente").hasAnyAuthority("ROLE_ADMIN");  //L'ADMIN VEDE TUTTE LE RICHIESTE DI QUELL'UTENTE SPECIFICO
+        http.authorizeRequests().antMatchers(GET, "/api/richiesta/getRichiesteUtente").hasAnyAuthority("ROLE_USER");                          //RICHIESTE NON ANCORA GESTITE (L'UTENTE VEDE LE SUE RICHIESTE NON ANCORA GESTITE)
+        http.authorizeRequests().antMatchers(GET, "/api/richiesta/getRichiesteAdmin").hasAnyAuthority("ROLE_ADMIN");                          //RICHIESTE NON GESTITE DAGLI ADMIN DI TUTTI GLI UTENTI
+        http.authorizeRequests().antMatchers(GET, "/api/richiesta/getRichiesteByUtente").hasAnyAuthority("ROLE_ADMIN");                       //L'ADMIN VEDE TUTTE LE RICHIESTE DI QUELL'UTENTE SPECIFICO
         http.authorizeRequests().antMatchers(PUT, "/api/richiesta/accettaRichiesta").hasAnyAuthority("ROLE_ADMIN");
         http.authorizeRequests().antMatchers(PUT, "/api/richiesta/rifiutaRichiesta").hasAnyAuthority("ROLE_ADMIN");
-
+*/
 
         http.authorizeRequests().anyRequest().authenticated();
 
