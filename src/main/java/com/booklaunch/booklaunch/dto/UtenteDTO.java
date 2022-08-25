@@ -3,16 +3,16 @@ package com.booklaunch.booklaunch.dto;
 import com.booklaunch.booklaunch.exception.enums.RoleEnum;
 import com.booklaunch.booklaunch.model.Utente;
 import lombok.*;
-import org.springframework.format.annotation.DateTimeFormat;
 
-import java.time.LocalDate;
+/**
+ * La classe UtenteDTO si occupa dello scambio di informazioni (request & response),
+ * tramite i vari endpoint, fra back-end e front-end
+ */
 
-@Builder
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-
 public class UtenteDTO {
 
     public Long id;
@@ -20,9 +20,7 @@ public class UtenteDTO {
     public String cognome;
     private String email;
     private String password;
-
     public RoleEnum ruolo;
-
 
     public UtenteDTO(Utente utente) {
         this.id = utente.getId();

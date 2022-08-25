@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
+
 @Service
 @Slf4j
 @AllArgsConstructor
@@ -29,15 +30,10 @@ public class UtenteServiceImpl implements UtenteService, UserDetailsService {
 
     private final UtenteRepository utenteRepository;
     private static UtenteEnum utenteEnum;
-
     private final PasswordEncoder passwordEncoder;
 
-
-
-
-
     /**
-     * Ricerco l'username per security
+     * Metodo che ricerca lo username per security authorities
      *
      * @param email
      * @return
@@ -56,21 +52,41 @@ public class UtenteServiceImpl implements UtenteService, UserDetailsService {
         return new org.springframework.security.core.userdetails.User(utente.getEmail(), utente.getPassword(), authorities);
     }
 
+    /**
+     * -Metodo che effetta l'insert di un nuovo utente
+     *  dopo aver verificato la non esistenza dello stesso,
+     *  altrimenti verrà inviata l'exception custom
+     *
+     * @param utenteDTO
+     * @return UtenteDTO
+     */
     @Override
     public UtenteDTO create_utente(UtenteDTO utenteDTO) {
         if(utenteRepository.existsByEmail(utenteDTO.getEmail())){
             utenteEnum = UtenteEnum.getUtenteEnumByMessageCode("UTE_AE");
             throw new ApiRequestException(utenteEnum.getMessage());
         }else{
-            Utente utente = new Utente(utenteDTO);
-            utente.setRuolo(RoleEnum.ROLE_USER);
-            utente.setPassword(passwordEncoder.encode(utenteDTO.getPassword()));
-            utente.setEmail(utenteDTO.getEmail().toUpperCase(Locale.ROOT));
+            Utente utente = new Utente.UtenteBuilder()
+                    .nome(utenteDTO.nome)
+                    .cognome(utenteDTO.cognome)
+                    .email(utenteDTO.getEmail().toUpperCase(Locale.ROOT))
+                    .password(passwordEncoder.encode(utenteDTO.getPassword()))
+                    .ruolo(RoleEnum.valueOf("ROLE_USER")).build();
+
             utenteRepository.save(utente);
+
             return new UtenteDTO(utente);
+
+
         }
     }
 
+    /**
+     * -Metodo che effettia il cambio ruolo da USER ad ADMIN
+     *
+     * @param id_utente
+     * @return UtenteDTO
+     */
     @Override
     public UtenteDTO create_admin(Long id_utente) {
         if(!utenteRepository.existsById(id_utente)){
@@ -80,10 +96,18 @@ public class UtenteServiceImpl implements UtenteService, UserDetailsService {
             Utente utente = utenteRepository.findById(id_utente).get();
             utente.setRuolo(RoleEnum.ROLE_ADMIN);
             utenteRepository.save(utente);
+
             return new UtenteDTO(utente);
         }
     }
 
+    /**
+     * -Metodo che permette di modificare le credenziali di accesso
+     *  dell'utente, ritornando l'utente con i parametri modificati
+     *
+     * @param utenteDTO
+     * @return UtenteDTO
+     */
     @Override
     public UtenteDTO update_utente(UtenteDTO utenteDTO) {
         if (utenteRepository.existsById(utenteDTO.id)) {
@@ -106,6 +130,13 @@ public class UtenteServiceImpl implements UtenteService, UserDetailsService {
 
     }
 
+    /**
+     * -Metodo che effettia il delete di un utente dal
+     * -Controlla che esiste (altimenti invia exception custom
+     *
+     * @param id_utente
+     * @return Boolean
+     */
     @Override
     public Boolean elimina_utente(Long id_utente) {
         if (utenteRepository.existsById(id_utente)) {
@@ -118,6 +149,11 @@ public class UtenteServiceImpl implements UtenteService, UserDetailsService {
 
     }
 
+    /**
+     * -Metodo che ritorna tutti gli utenti presenti nel DB
+     *
+     * @return List<UtenteDTO>
+     */
     @Override
     public List<UtenteDTO> findAll() {
         if (!utenteRepository.findAll().isEmpty())
@@ -128,6 +164,13 @@ public class UtenteServiceImpl implements UtenteService, UserDetailsService {
         }
     }
 
+    /**
+     * -Metodo che ritorna l'utente ricercato tramite email
+     *  altrimenti invia exception custom
+     *
+     * @param email
+     * @return UtenteDTO
+     */
     @Override
     public UtenteDTO findByEmail(String email) {
         if (email != null && utenteRepository.existsByEmail(email.toUpperCase(Locale.ROOT)))
@@ -138,6 +181,13 @@ public class UtenteServiceImpl implements UtenteService, UserDetailsService {
         }
     }
 
+    /**
+     * -Metodo che ritorna una lista di utenti ricercati tramite cognome
+     *  altrimenti invia exception custom
+     *
+     * @param cognome
+     * @return List<UtenteDTO>
+     */
     @Override
     public List<UtenteDTO> findByCognome(String cognome) {
         if (cognome != null && utenteRepository.existsByCognome(cognome))

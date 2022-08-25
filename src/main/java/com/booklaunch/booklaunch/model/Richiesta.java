@@ -1,15 +1,20 @@
 package com.booklaunch.booklaunch.model;
 
 import com.booklaunch.booklaunch.dto.RichiestaDTO;
-import com.booklaunch.booklaunch.exception.enums.RoleEnum;
-import lombok.*;
-import org.springframework.format.annotation.DateTimeFormat;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
+/**
+ * - Il Model contiene le classi che rappresentano le tabelle del Database.
+ * - La classe Richiesta rappresenta l'entità richiesta nel DB
+ * - Con l'annotation @Id si indica che quell'attribbuto specifico sarà l'id
+ * - Con l'annotation @NonNull si indica un attribbuto che non può essere vuoto
+ * - Con l'annotation @ManyToOne e @OneToMany si indicano le cardinalità tra le varie entità del database
+ */
 @Entity
 @Builder
 @Data
@@ -17,8 +22,8 @@ import java.util.List;
 @NoArgsConstructor
 public class Richiesta {
 
-    @Id  //specifica l'id
-    @GeneratedValue(strategy = GenerationType.AUTO) //ogni tabella inizierà da 1
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     private Boolean post_pranzo;

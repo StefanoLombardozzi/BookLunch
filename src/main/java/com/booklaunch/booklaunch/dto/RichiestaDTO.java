@@ -1,12 +1,12 @@
 package com.booklaunch.booklaunch.dto;
 
 import com.booklaunch.booklaunch.model.Richiesta;
-import com.booklaunch.booklaunch.model.Utente;
 import lombok.*;
-import org.springframework.format.annotation.DateTimeFormat;
 
-import java.time.LocalDate;
-
+/**
+ * La classe RichiestaDTO si occupa dello scambio di informazioni (request & response),
+ * tramite i vari endpoint, fra back-end e front-end
+ */
 @Builder
 @Getter
 @Setter

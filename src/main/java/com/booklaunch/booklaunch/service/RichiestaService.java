@@ -4,6 +4,10 @@ import com.booklaunch.booklaunch.dto.RichiestaDTO;
 
 import java.util.List;
 
+/**
+ * Il livello Service contiene la business logic.
+ * Definisce le funzionalità fornite, come sono vi si accede e quali parametri sono passati e ritornati
+ */
 public interface RichiestaService {
 
     RichiestaDTO create_richiesta(RichiestaDTO richiestaDTO);

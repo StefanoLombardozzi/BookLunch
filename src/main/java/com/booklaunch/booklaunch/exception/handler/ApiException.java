@@ -4,6 +4,11 @@ import org.springframework.http.HttpStatus;
 
 import java.time.ZonedDateTime;
 
+/**
+ * Le custom excepton vengono inviate al front-end, tramite le classi
+ * "ApiException"," ApiExceptionHandler", "ApiRequestException",
+ * sia per quanto riguarda lo status HTTP dell’errore generato, sia per quanto riguarda un messaggio che descrive brevemente il problema.
+ */
 public class ApiException {
 
     private final String message;

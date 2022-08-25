@@ -1,5 +1,8 @@
 package com.booklaunch.booklaunch.exception.enums;
 
+/**
+ * In prenotazioneEnum vengono gestite tutte le custom exception riguardanti le prenotazioni
+ */
 public enum PrenotazioneEnum {
 
     PRENOTAZIONE_NOT_FOUND("PRE_NF", "La prenotazione che stai cercando non è stata trovata"),
@@ -20,14 +23,30 @@ public enum PrenotazioneEnum {
         this.message = message;
     }
 
+    /**
+     *-Ritorna il codice del messaggio di errore
+     *
+     * @return String
+     */
     public String getMessageCode() {
         return messageCode;
     }
 
+    /**
+     * -Ritorna il messaggio di errore
+     *
+     * @return String
+     */
     public String getMessage() {
         return message;
     }
 
+    /**
+     * -Ritorna PrenotazioneEnum associata al codice di errore
+     *
+     * @param messageCode
+     * @return PrenotazioneEnum
+     */
     public static PrenotazioneEnum getPrenotazioneEnumByMessageCode(final String messageCode) {
         for (final PrenotazioneEnum prenotazioneEnum : PrenotazioneEnum.values()) {
             if (prenotazioneEnum.getMessageCode().equals(messageCode)) {

@@ -1,4 +1,5 @@
 package com.booklaunch.booklaunch.security;
+
 import com.booklaunch.booklaunch.security.filter.CustomAuthenticationFilter;
 import com.booklaunch.booklaunch.security.filter.CustomAuthorizationFilter;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,7 @@ import java.util.Arrays;
 
 import static org.springframework.http.HttpMethod.*;
 
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -35,6 +37,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserDetailsService userDetailsService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    /**
+     * Metodo che richiama il metodo loadUserByUsername(String username),
+     * che controlla l'esistenza dell'utente al momento del login.
+     * Se non presente, verrà restituito un messaggio di errore
+     *
+     * @param auth
+     * @throws Exception
+     */
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder);
@@ -42,7 +52,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
     /**
-     * Qui configuro l'accesso agli endpoint in base al ruolo
+     * Meotodo che configura l'accesso agli endpoint in base al ruolo
      * @param http
      * @throws Exception
      */
@@ -59,8 +69,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/", "/public/**", "/resources/static/**")
                 .permitAll();
 
-        /*
-        //UTENTE
+
+        /**
+         * Gestione delle authorization per l'accesso agli endpoint di tipo Utente
+         */
         http.authorizeRequests().antMatchers(GET, "/api/utente/findAll").hasAnyAuthority("ROLE_ADMIN");
         http.authorizeRequests().antMatchers(POST, "/api/utente/createUtente").permitAll();
         http.authorizeRequests().antMatchers(DELETE, "/api/utente/deleteUtente").hasAnyAuthority("ROLE_ADMIN");
@@ -71,10 +83,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers(GET, "/api/utente/findEmail").hasAnyAuthority("ROLE_ADMIN");
         http.authorizeRequests().antMatchers(POST, "/api/utente/findCognome").hasAnyAuthority("ROLE_ADMIN");
 
-        //PRENOTAZIONE
+        /**
+         * Gestione delle authorization per l'accesso agli endpoint di tipo Prenotazione
+         */
         http.authorizeRequests().antMatchers(GET, "/api/prenotazione/findAll").hasAnyAuthority("ROLE_ADMIN");
-        http.authorizeRequests().antMatchers(POST, "/api/prenotazione/insertPrenotazione").hasAnyAuthority("ROLE_USER");
         http.authorizeRequests().antMatchers(POST, "/api/prenotazione/insertPrenotazione").hasAnyAuthority("ROLE_ADMIN");
+        http.authorizeRequests().antMatchers(POST, "/api/prenotazione/insertPrenotazione").hasAnyAuthority("ROLE_USER");
         http.authorizeRequests().antMatchers(DELETE, "/api/prenotazione/deletePrenotazione").hasAnyAuthority("ROLE_USER");
         http.authorizeRequests().antMatchers(DELETE, "/api/prenotazione/deletePrenotazione").hasAnyAuthority("ROLE_ADMIN");
         http.authorizeRequests().antMatchers(GET, "/api/prenotazione/findByData").hasAnyAuthority("ROLE_ADMIN");
@@ -89,18 +103,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers(GET, "/api/prenotazione/findByUtente").hasAnyAuthority("ROLE_USER");
 
 
-        //RICHIESTA
+        /**
+         * Gestione delle authorization per l'accesso agli endpoint di tipo Richiesta
+         */
         http.authorizeRequests().antMatchers(GET, "/api/richiesta/findAll").hasAnyAuthority("ROLE_ADMIN");
         http.authorizeRequests().antMatchers(POST, "/api/richiesta/createRichiesta").hasAnyAuthority("ROLE_USER");
         http.authorizeRequests().antMatchers(POST, "/api/richiesta/createRichiesta").hasAnyAuthority("ROLE_ADMIN");
         http.authorizeRequests().antMatchers(DELETE, "/api/richiesta/deleteRichiesta").hasAnyAuthority("ROLE_USER");
         http.authorizeRequests().antMatchers(DELETE, "/api/richiesta/deleteRichiesta").hasAnyAuthority("ROLE_ADMIN");
-        http.authorizeRequests().antMatchers(GET, "/api/richiesta/getRichiesteUtente").hasAnyAuthority("ROLE_USER");                          //RICHIESTE NON ANCORA GESTITE (L'UTENTE VEDE LE SUE RICHIESTE NON ANCORA GESTITE)
-        http.authorizeRequests().antMatchers(GET, "/api/richiesta/getRichiesteAdmin").hasAnyAuthority("ROLE_ADMIN");                          //RICHIESTE NON GESTITE DAGLI ADMIN DI TUTTI GLI UTENTI
-        http.authorizeRequests().antMatchers(GET, "/api/richiesta/getRichiesteByUtente").hasAnyAuthority("ROLE_ADMIN");                       //L'ADMIN VEDE TUTTE LE RICHIESTE DI QUELL'UTENTE SPECIFICO
+        http.authorizeRequests().antMatchers(GET, "/api/richiesta/getRichiesteUtente").hasAnyAuthority("ROLE_ADMIN");
+        http.authorizeRequests().antMatchers(GET, "/api/richiesta/getRichiesteAdmin").hasAnyAuthority("ROLE_ADMIN");
+        http.authorizeRequests().antMatchers(GET, "/api/richiesta/getRichiesteByUtente").hasAnyAuthority("ROLE_USER");
         http.authorizeRequests().antMatchers(PUT, "/api/richiesta/accettaRichiesta").hasAnyAuthority("ROLE_ADMIN");
         http.authorizeRequests().antMatchers(PUT, "/api/richiesta/rifiutaRichiesta").hasAnyAuthority("ROLE_ADMIN");
-*/
+
 
         http.authorizeRequests().anyRequest().authenticated();
 
@@ -114,26 +130,4 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
-
-
-
-
-    /**
-     * In questo metodo vengono gestiti le CORS, per maggiore informazioni guardare la documentazione
-     *
-     * @return CorsConfiguration
-     */
-    private CorsConfiguration getCorsConfiguration() {
-        CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.setAllowCredentials(true);
-        corsConfiguration.setAllowedOrigins(Arrays.asList("http://localhost:8080"));
-        corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        corsConfiguration.setAllowedHeaders(Arrays.asList("Origin", "Access-Control-Allow-Origin", "Content-Type", "Accept", "Authorization"
-                , "Origin, Accept", "X-Requesed-With", "Access-Control-Request-Method", "Access-Control-Request-Headers"));
-        corsConfiguration.setExposedHeaders(Arrays.asList("Origin", "Content-Type", "Accept", "Authorization"
-                , "Access-Control-Allow-Origin", "Access-Control-Allow-Origin", "Access-Control-Allow-Credentials"));
-        return corsConfiguration;
-    }
-
-
 }

@@ -5,6 +5,10 @@ import com.booklaunch.booklaunch.dto.PrenotazioneDTO;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * Il livello Service contiene la business logic.
+ * Definisce le funzionalità fornite, come vi si accede e quali parametri sono passati e ritornati
+ */
 public interface PrenotazioneService {
 
     List<PrenotazioneDTO> findAll();
@@ -15,15 +19,15 @@ public interface PrenotazioneService {
 
     List<PrenotazioneDTO> findByData(LocalDate data_prenotazione);
 
-    void countByPranzoAndData(LocalDate data_prenotazione);
+    int countByPranzoAndData(LocalDate data_prenotazione);
 
-    void countByCenaAndData(LocalDate data_prenotazione);
+    int countByCenaAndData(LocalDate data_prenotazione);
 
-    void countByColazioneAndData(LocalDate data_prenotazione);
+    int countByColazioneAndData(LocalDate data_prenotazione);
 
-    void countBySacchettoPranzoAndData(LocalDate data_prenotazione);
+    int countBySacchettoPranzoAndData(LocalDate data_prenotazione);
 
-    void countBySacchettoCenaAndData(LocalDate data_prenotazione);
+    int countBySacchettoCenaAndData(LocalDate data_prenotazione);
 
     PrenotazioneDTO updatePrenotazione(PrenotazioneDTO prenotazioneDTO);
 

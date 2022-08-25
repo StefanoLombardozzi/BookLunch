@@ -21,6 +21,10 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+/**
+ * Ogni metodo testato viene annotato con @Test e al loro interno vengono richiamati i metodi della classe Assertions e Mockito.
+ * Gli Assertions servono per verificare la coerenza tra i dati che ci aspettiamo e che effettivamente vengono restituiti.
+ */
 @ExtendWith(MockitoExtension.class)
 public class UtenteServiceImplTest implements PasswordEncoder {
 
@@ -38,13 +42,22 @@ public class UtenteServiceImplTest implements PasswordEncoder {
     }
 
 
-
-
+    /**
+     * Testing metodo findByEmail:
+     * -Verifico che la mail dell'utente sia uguale
+     *  alla mail ritornata dal metodo
+     */
     @Test
     void findByEmail() {
         String email = "test@gmail.com";
 
-        Utente utente = Utente.builder().id(1l).nome("Stefano").cognome("Boom").password("test").email(email.toUpperCase(Locale.ROOT)).ruolo(RoleEnum.ROLE_USER).build();
+        Utente utente = new Utente.UtenteBuilder()
+                .id(1l)
+                .nome("Stefano")
+                .cognome("Boom")
+                .password("test")
+                .email(email.toUpperCase(Locale.ROOT))
+                .ruolo(RoleEnum.ROLE_USER).build();
 
         assertNotNull(utente);
         lenient().when(utenteRepository.existsByEmail(email.toUpperCase(Locale.ROOT))).thenReturn(true);
@@ -57,12 +70,30 @@ public class UtenteServiceImplTest implements PasswordEncoder {
         reset(utenteRepository);
     }
 
+    /**
+     * Testing metodo findByCognome:
+     * -Verifico che l'id dell'utente sia uguale
+     *  all'id (utente cercato tramite cognome) ritornata dal metodo
+     */
     @Test
     void findByCognome() {
         String cognome = "Boom";
 
-        Utente utente = Utente.builder().id(1l).nome("Stefano").cognome(cognome).password("test").email("test@gmail.com").ruolo(RoleEnum.ROLE_USER).build();
-        Utente utente1 = Utente.builder().id(2l).nome("Marco").cognome(cognome).password("test").email("test123@gmail.com").ruolo(RoleEnum.ROLE_USER).build();
+        Utente utente = new Utente.UtenteBuilder()
+                .id(1l)
+                .nome("Stefano")
+                .cognome(cognome)
+                .password("test")
+                .email("test@gmail.com")
+                .ruolo(RoleEnum.ROLE_USER).build();
+
+        Utente utente1 = new Utente.UtenteBuilder()
+                .id(2l).nome("Marco")
+                .cognome(cognome)
+                .password("test")
+                .email("test123@gmail.com")
+                .ruolo(RoleEnum.ROLE_USER).build();
+
         List<Utente> list = List.of(utente, utente1);
 
         assertNotNull(utente);
@@ -76,6 +107,11 @@ public class UtenteServiceImplTest implements PasswordEncoder {
         reset(utenteRepository);
     }
 
+    /**
+     * Testing metodo elimina_utente:
+     * -Verifico che esiste l'utente con il lenient()
+     * -Verifico che l'utente sia stato eliminato
+     */
     @Test
     void elimina_utente() {
 
@@ -88,9 +124,21 @@ public class UtenteServiceImplTest implements PasswordEncoder {
 
     }
 
+    /**
+     * Testing metodo create_utente:
+     * -Verifico che l'utente non sia registrato con il lenient()
+     * -Verifico che la mail del nuovo utente sia uguale
+     *  alla mail ritornata dal metodo
+     */
     @Test
     void create_utente() {
-        Utente utente = Utente.builder().id(1l).nome("Stefano").cognome("Boom").password("test123").email("test@gmail.com").ruolo(RoleEnum.ROLE_USER).build();
+        Utente utente = new Utente.UtenteBuilder()
+                .id(1l)
+                .nome("Stefano")
+                .cognome("Rossi")
+                .password("test123")
+                .email("test@gmail.com")
+                .ruolo(RoleEnum.ROLE_USER).build();
 
         lenient().when(utenteRepository.existsByEmail(utente.getEmail())).thenReturn(false);
 
@@ -109,8 +157,10 @@ public class UtenteServiceImplTest implements PasswordEncoder {
     }
 
     /**
-     * Questo metodo testa l'update dell'anagrafica
-     * dell'utente con i relativi controlli
+     * Testing metodo update_utente:
+     * -Controllo che esiste l'utente
+     * -Verififco che la mail dell'utente modificato sia uguale
+     *  alla mail dell'utente ritornato dal metodo
      */
     @Test
     void update_utente(){
@@ -118,7 +168,13 @@ public class UtenteServiceImplTest implements PasswordEncoder {
         String password = "abcde";
         String email = "test@gmail.com";
 
-        Utente utente = Utente.builder().id(1l).nome("Stefano").cognome("Boom").email("boom@boom.gmail.com").ruolo(RoleEnum.ROLE_USER).password(password).build();
+        Utente utente = new Utente.UtenteBuilder()
+                .id(1l)
+                .nome("Stefano")
+                .cognome("Boom")
+                .email("boom@boom.gmail.com")
+                .ruolo(RoleEnum.ROLE_USER).
+                password(password).build();
 
         UtenteDTO utenteDTO = new UtenteDTO(utente);
 
@@ -140,10 +196,30 @@ public class UtenteServiceImplTest implements PasswordEncoder {
 
     }
 
+    /**
+     * Testing metodo findAll:
+     * -Con asserTrye verifica che la condizione all'interno di essa sia vera
+     * -Con il verify verifico che il findAll sia richiamato almeno una volta
+     *  così da accertarmi che ritorna tutti gli utenti
+     */
     @Test
     void findAll(){
-        Utente utente = Utente.builder().id(1l).nome("Stefano").cognome("Boom").password("test").email("test@gmail.com").ruolo(RoleEnum.ROLE_USER).build();
-        Utente utente1 = Utente.builder().id(2l).nome("Marco").cognome("Frufru").password("test").email("test123@gmail.com").ruolo(RoleEnum.ROLE_USER).build();
+        Utente utente = new Utente.UtenteBuilder()
+                .id(1l)
+                .nome("Stefano")
+                .cognome("Boom")
+                .password("test")
+                .email("test@gmail.com")
+                .ruolo(RoleEnum.ROLE_USER).build();
+
+        Utente utente1 = new Utente.UtenteBuilder()
+                .id(2l)
+                .nome("Marco")
+                .cognome("Frufru")
+                .password("test")
+                .email("test123@gmail.com")
+                .ruolo(RoleEnum.ROLE_USER).build();
+
         List<Utente> list = List.of(utente, utente1);
 
         assertTrue(utenteRepository.findAll().isEmpty());
@@ -152,23 +228,12 @@ public class UtenteServiceImplTest implements PasswordEncoder {
         verify(utenteRepository, atLeast(1)).findAll();
         reset(utenteRepository);
     }
-
-
-
-
-
-
-
-
-
-
-
+    
     /**
      * Questi metodi sono necessari per il corretto mock di BcryptEncoder
      * @param charSequence
      * @return
      */
-
     @Override
     public String encode(CharSequence charSequence) {
         return charSequence.toString();

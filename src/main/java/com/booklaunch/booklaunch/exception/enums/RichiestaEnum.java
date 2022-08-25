@@ -1,5 +1,8 @@
 package com.booklaunch.booklaunch.exception.enums;
 
+/**
+ * In RichiestaEnum vengono gestite tutte le custom exception riguardanti le richieste
+ */
 public enum RichiestaEnum {
 
     RICHIESTA_NOT_FOUND("RIC_NF", "La richiesta che stai cercando non è stata trovata"),
@@ -19,14 +22,30 @@ public enum RichiestaEnum {
         this.message = message;
     }
 
+    /**
+     *-Ritorna il codice del messaggio di errore
+     *
+     * @return String
+     */
     public String getMessageCode() {
         return messageCode;
     }
 
+    /**
+     * -Ritorna il messaggio di errore
+     *
+     * @return String
+     */
     public String getMessage() {
         return message;
     }
 
+    /**
+     * -Ritorna RichiestaEnum associata al codice di errore
+     *
+     * @param messageCode
+     * @return RichiestaEnum
+     */
     public static RichiestaEnum getRichiestaEnumByMessageCode(final String messageCode) {
         for (final RichiestaEnum richiestaEnum : RichiestaEnum.values()) {
             if (richiestaEnum.getMessageCode().equals(messageCode)) {

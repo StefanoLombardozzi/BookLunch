@@ -1,7 +1,6 @@
 package com.booklaunch.booklaunch.service.impl;
 
 import com.booklaunch.booklaunch.dto.RichiestaDTO;
-import com.booklaunch.booklaunch.dto.UtenteDTO;
 import com.booklaunch.booklaunch.exception.enums.PrenotazioneEnum;
 import com.booklaunch.booklaunch.exception.enums.RichiestaEnum;
 import com.booklaunch.booklaunch.exception.enums.UtenteEnum;
@@ -12,14 +11,13 @@ import com.booklaunch.booklaunch.repository.PrenotazioneRepository;
 import com.booklaunch.booklaunch.repository.RichiestaRepository;
 import com.booklaunch.booklaunch.repository.UtenteRepository;
 import com.booklaunch.booklaunch.service.RichiestaService;
-import com.booklaunch.booklaunch.service.UtenteService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
 
 @Service
 @Slf4j
@@ -31,36 +29,56 @@ public class RichiestaServiceImpl implements RichiestaService {
 
     private static PrenotazioneEnum prenotazioneEnum;
 
+    private static UtenteEnum utenteEnum;
+
     private final PrenotazioneRepository prenotazioneRepository;
 
     private final UtenteRepository utenteRepository;
 
-
+    /**
+     * -Metodo che, dopo aver controllato l'esistenza dell'utente e della prenotazione
+     *  crea una nuova richiesta modificando il campo check_richiesta in Prenotazione
+     *
+     * @param richiestaDTO
+     * @return RichiestaDTO
+     */
     @Override
     public RichiestaDTO create_richiesta(RichiestaDTO richiestaDTO) {
-        if (prenotazioneRepository.existsById(richiestaDTO.getId_prenotazione())) {
-            Prenotazione prenotazione = prenotazioneRepository.findById(richiestaDTO.getId_prenotazione()).get();
-            Richiesta richiesta = new Richiesta(richiestaDTO);
-            richiesta.setUtente(utenteRepository.findById(richiestaDTO.getId_utente()).get());
-            richiesta.setPrenotazione(prenotazione);
-            /*richiesta.setPost_pranzo(false);  //false di default per far funzionare gli if al di sotto di qui
-            richiesta.setPost_cena(false);*/
+        if (utenteRepository.existsById(richiestaDTO.getId_utente())) {
+            if (prenotazioneRepository.existsById(richiestaDTO.getId_prenotazione())) {
+                Prenotazione prenotazione = prenotazioneRepository.findById(richiestaDTO.getId_prenotazione()).get();
 
-            if ((richiestaRepository.findByPrenotazione_IdAndStato_richiesta(prenotazione.getId())) == 0) {
-                prenotazione.setCheck_richiesta(Boolean.TRUE);
-                prenotazioneRepository.save(prenotazione);
-                richiestaRepository.save(richiesta);
-                return new RichiestaDTO(richiesta);
+                Richiesta richiesta = new Richiesta(richiestaDTO);
+
+                richiesta.setUtente(utenteRepository.findById(richiestaDTO.getId_utente()).get());
+                richiesta.setPrenotazione(prenotazione);
+
+                if ((richiestaRepository.findByPrenotazione_IdAndStato_richiesta(prenotazione.getId())) == 0) {
+                    prenotazione.setCheck_richiesta(Boolean.TRUE);
+                    prenotazioneRepository.save(prenotazione);
+                    richiestaRepository.save(richiesta);
+                    return new RichiestaDTO(richiesta);
+                } else {
+                    richiestaEnum = RichiestaEnum.getRichiestaEnumByMessageCode("RIC_AE");
+                    throw new ApiRequestException(richiestaEnum.getMessage());
+                }
             } else {
-                richiestaEnum = RichiestaEnum.getRichiestaEnumByMessageCode("RIC_AE");
-                throw new ApiRequestException(richiestaEnum.getMessage());
+                prenotazioneEnum = PrenotazioneEnum.getPrenotazioneEnumByMessageCode("PRE_IDNE");
+                throw new ApiRequestException(prenotazioneEnum.getMessage());
             }
-        } else {
-            prenotazioneEnum = PrenotazioneEnum.getPrenotazioneEnumByMessageCode("PRE_IDNE");
-            throw new ApiRequestException(prenotazioneEnum.getMessage());
+
+        }else {
+            utenteEnum = UtenteEnum.getUtenteEnumByMessageCode("UTE_NF");
+            throw new ApiRequestException(utenteEnum.getMessage());
         }
     }
 
+    /**
+     * -Metodo che effetta il delete di una richiesta
+     *
+     * @param id_richiesta
+     * @return Boolean
+     */
     @Override
     public Boolean delete_richiesta(Long id_richiesta) {
         if (richiestaRepository.existsById(id_richiesta)) {
@@ -73,8 +91,9 @@ public class RichiestaServiceImpl implements RichiestaService {
     }
 
     /**
+     * -Metodo che ritorna tutte le richieste presenti nel DB
      *
-     * @return
+     * @return List<RichiestaDTO>
      */
     @Override
     public List<RichiestaDTO> findAll() {
@@ -86,6 +105,12 @@ public class RichiestaServiceImpl implements RichiestaService {
         }
     }
 
+    /**
+     * -Metodo che permette all'utente di visualizza le richieste non ancora gestite dall'admin
+     *
+     * @param id_utente
+     * @return List<RichiestaDTO>
+     */
     @Override
     public List<RichiestaDTO> getRichiesteUtente(Long id_utente) {
         if (id_utente != null && utenteRepository.existsById(id_utente)) {
@@ -96,6 +121,12 @@ public class RichiestaServiceImpl implements RichiestaService {
         }
     }
 
+    /**
+     * -Metodo che restituisce le richieste non gestite di tutti gli utenti
+     *
+     * @param id_admin
+     * @return List<RichiestaDTO>
+     */
     @Override
     public List<RichiestaDTO> getRichiesteAdmin(Long id_admin) {
         if (id_admin != null && utenteRepository.existsById(id_admin)) {
@@ -106,6 +137,12 @@ public class RichiestaServiceImpl implements RichiestaService {
         }
     }
 
+    /**
+     * -Metodo che permette all'admin visualizza le richieste di un utente specifico non ancora gestite
+     *
+     * @param id_utente
+     * @return List<RichiestaDTO>
+     */
     @Override
     public List<RichiestaDTO> getRichiesteByUtente(Long id_utente) {
         if (id_utente != null && utenteRepository.existsById(id_utente)) {
@@ -116,6 +153,13 @@ public class RichiestaServiceImpl implements RichiestaService {
         }
     }
 
+    /**
+     * -Metodo che restituisce un boolean a seguito di una richiesta accettata
+     *  dopo aver controllato che non sia già stata gestita precedentemente
+     *
+     * @param id_richiesta
+     * @return Boolean
+     */
     @Override
     public Boolean accetta_richiesta(Long id_richiesta) {
         if (richiestaRepository.existsById(id_richiesta)) {
@@ -137,6 +181,13 @@ public class RichiestaServiceImpl implements RichiestaService {
         }
     }
 
+    /**
+     * -Metodo che restituisce un boolean a seguito di una richiesta rifiutata
+     *  dopo aver controllato che non sia già stata gestita precedentemente
+     *
+     * @param id_richiesta
+     * @return Boolean
+     */
     @Override
     public Boolean rifiuta_richiesta(Long id_richiesta) {
         if (richiestaRepository.existsById(id_richiesta)) {

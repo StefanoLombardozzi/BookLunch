@@ -6,7 +6,11 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
-@Builder
+/**
+ * La classe PrenotazioneDTO si occupa dello scambio di informazioni (request & response),
+ * tramite i vari endpoint, fra back-end e front-end
+ */
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -44,3 +48,4 @@ public class PrenotazioneDTO {
         this.id_utente = prenotazione.getUtente().getId();
     }
 }
+
