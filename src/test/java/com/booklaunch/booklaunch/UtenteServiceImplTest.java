@@ -77,7 +77,7 @@ public class UtenteServiceImplTest implements PasswordEncoder {
      */
     @Test
     void findByCognome() {
-        String cognome = "Boom";
+        String cognome = "Lomba";
 
         Utente utente = new Utente.UtenteBuilder()
                 .id(1l)
@@ -98,6 +98,7 @@ public class UtenteServiceImplTest implements PasswordEncoder {
 
         assertNotNull(utente);
         lenient().when(utenteRepository.existsByCognome(cognome)).thenReturn(true);
+
         lenient().when(utenteRepository.findByCognome(cognome)).thenReturn(list);
 
         UtenteDTO utenteDTO = new UtenteDTO(utente);
@@ -171,8 +172,8 @@ public class UtenteServiceImplTest implements PasswordEncoder {
         Utente utente = new Utente.UtenteBuilder()
                 .id(1l)
                 .nome("Stefano")
-                .cognome("Boom")
-                .email("boom@boom.gmail.com")
+                .cognome("Lomba")
+                .email("Lomba@gmail.com")
                 .ruolo(RoleEnum.ROLE_USER).
                 password(password).build();
 
@@ -207,7 +208,7 @@ public class UtenteServiceImplTest implements PasswordEncoder {
         Utente utente = new Utente.UtenteBuilder()
                 .id(1l)
                 .nome("Stefano")
-                .cognome("Boom")
+                .cognome("Lomba")
                 .password("test")
                 .email("test@gmail.com")
                 .ruolo(RoleEnum.ROLE_USER).build();
@@ -215,7 +216,7 @@ public class UtenteServiceImplTest implements PasswordEncoder {
         Utente utente1 = new Utente.UtenteBuilder()
                 .id(2l)
                 .nome("Marco")
-                .cognome("Frufru")
+                .cognome("Rossi")
                 .password("test")
                 .email("test123@gmail.com")
                 .ruolo(RoleEnum.ROLE_USER).build();
